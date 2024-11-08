@@ -57,7 +57,8 @@ public class CtrlConfig extends AppCompatActivity {
             new android.os.Handler().postDelayed(() -> {
                 String host = String.valueOf(txtHost.getText());
 
-                Main.wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
+               // Main.wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
+                Main.wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
                 Main.changeView("CtrlPrincipal");
             }, 1500);
 

@@ -1,6 +1,8 @@
 package com.example.barretina;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 public class CtrlPrincipal extends AppCompatActivity {
 
     public TextView txtTitle;
-
+    public Button btnProducts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,10 +26,15 @@ public class CtrlPrincipal extends AppCompatActivity {
 
         // Asocia los elementos de la UI a las variables
         txtTitle = findViewById(R.id.txtTitle);
+        btnProducts = findViewById(R.id.btnProducts);
 
 
-        // Puedes inicializar otros valores o configurar el texto aquí si es necesario
-        txtTitle.setText("Barretina Bar");
+        btnProducts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Main.sendMessageToServer("productes", null);
+            }
+        });
 
     }
 }

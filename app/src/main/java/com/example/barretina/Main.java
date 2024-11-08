@@ -39,9 +39,9 @@ public class Main extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (wsClient != null) {
-//            wsClient.forceExit();
-//        }
+        if (wsClient != null) {
+            wsClient.forceExit();
+        }
     }
 
 
@@ -71,13 +71,18 @@ public class Main extends AppCompatActivity {
             ctrlConfig.saveDataToXml(ctrlConfig, host, name);
             ctrlConfig.txtMessage.setText("Datos obtenidos ...");
 
-            wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
+           // wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
+            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
+
+
+            wsClient.onMessage((response) -> {
+                activity.runOnUiThread(() -> wsMessage(response, null));
+            });
+            wsClient.onError((response) -> {
+                activity.runOnUiThread(() -> wsError(response, null));
+            });
 
             Main.changeView("CtrlPrincipal");
-
-
-
-
         }, 1500);
     }
 
@@ -87,9 +92,11 @@ public class Main extends AppCompatActivity {
     private static void wsMessage(String response, CtrlConfig ctrlConfig) {
         try {
             JSONObject msgObj = new JSONObject(response);
+
+            Log.d("DEBUGGEO", msgObj.toString());
             switch (msgObj.getString("type")) {
-                case "clients":
-                    // Aquí puedes manejar la vista correspondiente
+                case "tags":
+                    Log.d("CtrlPrincipal", msgObj.getString("tags"));
                     break;
 
                 case "countdown":
@@ -130,26 +137,24 @@ public class Main extends AppCompatActivity {
         }
     }
 
-//    public static void sendMessageToServer(String type, JSONObject data) {
-//        if (wsClient != null) {
-//            JSONObject message = new JSONObject();
-//            try {
-//                message.put("type", type);
-//                message.put("data", data); // Datos específicos de la acción
-//
-//                wsClient.safeSend(message.toString());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                System.out.println("Failed to send message");
-//            }
-//        } else {
-//            System.out.println("WebSocket client is not initialized.");
-//        }
-//    }
+    public static void sendMessageToServer(String type, JSONObject data) {
+        if (wsClient != null) {
+            JSONObject message = new JSONObject();
+            try {
+                message.put("type", type);
+                message.put("data", data); // Datos específicos de la acción
 
-    private void test(){
-
+                wsClient.safeSend(message.toString());
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println("Failed to send message");
+            }
+        } else {
+            System.out.println("WebSocket client is not initialized.");
+        }
     }
+
+
     private static void wsError(String response, CtrlConfig ctrlConfig) {
         String connectionRefused = "Connection refused";
         if (response.contains(connectionRefused)) {
