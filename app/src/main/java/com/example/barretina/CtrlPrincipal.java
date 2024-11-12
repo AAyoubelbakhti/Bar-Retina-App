@@ -3,6 +3,7 @@ package com.example.barretina;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -80,7 +81,7 @@ public class CtrlPrincipal extends AppCompatActivity {
                 String imatge = jsonProducte.getString("imatge");
                 double preu = jsonProducte.getDouble("preu");
 
-                Producte producte = new Producte(id, nom, descripcio, imatge, preu);
+                Producte producte = new Producte(id, nom, descripcio, imatge, preu, 0);
                 productes.add(producte);
             }
 
@@ -95,17 +96,37 @@ public class CtrlPrincipal extends AppCompatActivity {
 
                     // Convertir el producto a JSONObject y añadirlo a "comandas"
                     JSONObject comanda = new JSONObject();
-                    try {
-                        comanda.put("id", selectedProducte.getId());
-                        comanda.put("nom", selectedProducte.getNom());
-                        comanda.put("descripcio", selectedProducte.getDescripcio());
-                        comanda.put("imatge", selectedProducte.getImatge());
-                        comanda.put("preu", selectedProducte.getPreu());
 
-                        comandas.put(comanda); // Añadir el producto a "comandas"
+                    try {
+                        Boolean exist = false;
+                        for (int i = 0; i < comandas.length(); i++) {
+                            JSONObject item = comandas.getJSONObject(i);
+
+                            if(item.has("id") && item.getString("nom").equals(selectedProducte.getNom())){
+                                exist = true;
+                                selectedProducte.setQuantiat(selectedProducte.getQuantiat()+1);
+                                double oldPrice = item.getDouble("preu");
+                                int quantitat = selectedProducte.getQuantiat();
+
+                                Log.d("CtrlPrincipal",String.valueOf(quantitat));
+                                comandas.getJSONObject(i).put("preu", oldPrice + selectedProducte.getPreu());
+                                comandas.getJSONObject(i).put("quantitat", (quantitat));
+                                break;
+                            }
+                        }
+                        if (!exist){
+                            comanda.put("id", selectedProducte.getId());
+                            comanda.put("nom", selectedProducte.getNom());
+                            comanda.put("descripcio", selectedProducte.getDescripcio());
+                            comanda.put("imatge", selectedProducte.getImatge());
+                            comanda.put("preu", selectedProducte.getPreu());
+                            comanda.put("quantitat", 1);
+
+                            comandas.put(comanda); // Añadir el producto a "comandas"
+                        }
                         Log.d("CtrlPrincipal", "Producto añadido a comandas: " + comanda.toString());
                         String numProductes = String.valueOf(comandas.length());
-                        txtContador.setText("Cantidad: " + numProductes);
+                        txtContador.setText("Productos: " + numProductes);
 
                     } catch (JSONException e) {
                         Log.e("CtrlPrincipal", "Error al añadir producto a comandas: " + e.getMessage());
@@ -128,10 +149,11 @@ public class CtrlPrincipal extends AppCompatActivity {
                 JSONObject product = comandas.getJSONObject(i);
                 String name = product.getString("nom");
                 double price = product.getDouble("preu");
+                int quantitat = product.getInt("quantitat");
 
                 // Suma el precio al total y agrega el nombre al detalle
                 totalPrice += price;
-                details.append(name).append(" - $").append(price).append("\n");
+                details.append(name).append(" x").append(quantitat).append(" - $").append(price).append("\n");
 
             } catch (JSONException e) {
                 Log.e("CtrlPrincipal", "Error al leer comando: " + e.getMessage());
@@ -154,20 +176,32 @@ public class CtrlPrincipal extends AppCompatActivity {
         final EditText editTextName = new EditText(this);
         final EditText editTextHost = new EditText(this);
 
-        // Configurar los EditText (puedes poner sugerencias, hints, etc.)
+        // Configurar los EditText (con hints y estilos)
         editTextName.setHint("Introduce el nombre");
         editTextHost.setHint("Introduce el host");
 
-        // Crear un LinearLayout que contenga ambos EditText
+        // Aplicar estilo a los EditText para mejorar su apariencia
+        editTextName.setPadding(20, 20, 20, 20); // Añadir padding interno
+        editTextHost.setPadding(20, 20, 20, 20); // Añadir padding interno
+
+        // Establecer el fondo blanco con bordes redondeados para los EditText
+        editTextName.setBackgroundResource(R.drawable.edit_text_style);
+        editTextHost.setBackgroundResource(R.drawable.edit_text_style);
+
+        // Configurar un LinearLayout con orientación vertical
         LinearLayout layout = new LinearLayout(this);
         layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(32, 32, 32, 32); // Añadir padding externo
+        layout.setGravity(Gravity.CENTER_HORIZONTAL); // Centrar los elementos
+
+        // Añadir los EditText al LinearLayout
         layout.addView(editTextName);
         layout.addView(editTextHost);
-        setCtrlCofig(CtrlConfig.getInstance());
+
         // Crear el AlertDialog
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Cambiar Configuración")
-                .setMessage("Introduce el nombre y host:")
+                .setMessage("Introduce el nombre y el host:")
                 .setView(layout) // Establece el layout con los EditText
                 .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                     @Override
@@ -179,14 +213,15 @@ public class CtrlPrincipal extends AppCompatActivity {
                         // Imprimir los valores en Log.d
                         Log.d("Config", "Nombre: " + name);
                         Log.d("Config", "Host: " + host);
-                        actulizarConfigXML(host, name);
+                        actualizarConfigXML(host, name);
                     }
                 })
                 .setNegativeButton("Cancelar", null) // Botón para cancelar
                 .show(); // Mostrar el AlertDialog
     }
 
-    public void actulizarConfigXML(String host, String name){
+
+    public void actualizarConfigXML(String host, String name){
         Log.d("CtrlPrincipal", "Estory actualizando");
         ctrlConfig.saveDataToXml(ctrlConfig, host, name);
     }
