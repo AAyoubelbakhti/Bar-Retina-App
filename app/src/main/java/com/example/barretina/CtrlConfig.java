@@ -9,25 +9,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
-
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.barretina.R;
 
 public class CtrlConfig extends AppCompatActivity {
 
+    public static CtrlConfig instance;
     public EditText txtName;
     public EditText txtHost;
 
     public TextView txtMessage;
 
 
+    public static CtrlConfig getInstance() {
+        return instance;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ctrl_config);
-
+        instance = this;
         txtName = findViewById(R.id.txtName);
         txtHost = findViewById(R.id.txtHost);
 
@@ -54,13 +56,7 @@ public class CtrlConfig extends AppCompatActivity {
         // Lanza la actividad CtrlConfig mediante un Intent para iniciar la configuración
         if (isConfigFile()) {
             Log.d("CtrlConfig", "Existe el archivo CONFIG");
-            new android.os.Handler().postDelayed(() -> {
-                String host = String.valueOf(txtHost.getText());
-
-               // Main.wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
-                Main.wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
-                Main.changeView("CtrlPrincipal");
-            }, 1500);
+            Main.connectToServer(this, CtrlConfig.this, true);
 
         }
 
@@ -69,7 +65,7 @@ public class CtrlConfig extends AppCompatActivity {
 
     private void connectToServer() {
         Log.d("CtrlConfig", "Conectando al servidor...");
-        Main.connectToServer(this, CtrlConfig.this);
+        Main.connectToServer(this, CtrlConfig.this, false);
 
     }
 
@@ -87,30 +83,29 @@ public class CtrlConfig extends AppCompatActivity {
     }
 
     public void saveDataToXml(CtrlConfig ctrlConfig, String host, String name) {
-        // Obtener los valores de los EditText
+        try {
+            if (host.isEmpty() || name.isEmpty()) {
+                ctrlConfig.txtMessage.setText("ERROR: rellena todos los campos");
+                return;
+            }
 
+            SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Verificar que los valores no estén vacíos
-        if (host.isEmpty() || name.isEmpty()) {
-            ctrlConfig.txtMessage.setText("ERROR: rellena todos los campos");
-            return;
-        }
+            editor.putString("host", host);
+            editor.putString("name", name);
 
-        // Obtener SharedPreferences y un editor
-        SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
-        // Guardar los valores en el archivo XML
-        editor.putString("host", host);
-        editor.putString("name", name);
-
-        // Confirmar cambios
-        if (editor.commit()) {
-            Toast.makeText(this, "Datos guardados exitosamente", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show();
+            if (editor.commit()) {
+                Toast.makeText(this, "Datos guardados exitosamente", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Error al guardar datos", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e("CtrlConfig", "Error al guardar datos: " + e.getMessage());
+            e.printStackTrace();
         }
     }
+
 
     public boolean isConfigFile() {
         // Obtener SharedPreferences

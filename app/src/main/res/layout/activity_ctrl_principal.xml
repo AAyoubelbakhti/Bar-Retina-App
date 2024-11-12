@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,6 +6,7 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Título -->
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
@@ -15,11 +15,47 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/btnProducts"
-        android:layout_width="214dp"
+    <!-- Fila horizontal con los botones y el contador -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Products"
-        android:layout_margin="16dp" />
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <!-- Botón "Ver Comanda" -->
+        <Button
+            android:id="@+id/btnVerComandas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ver Comanda"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Contador -->
+        <TextView
+            android:id="@+id/txtContador"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cantidad: 0"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="16dp" />
+
+        <!-- Botón "Settings" -->
+        <Button
+            android:id="@+id/btnConfig"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings" />
+
+    </LinearLayout>
+
+    <!-- Lista de productos -->
+    <ListView
+        android:id="@+id/listViewProductes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:dividerHeight="10dp" />
 
 </LinearLayout>

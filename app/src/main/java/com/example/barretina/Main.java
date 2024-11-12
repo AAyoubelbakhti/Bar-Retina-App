@@ -20,7 +20,8 @@ import java.util.List;
 public class Main extends AppCompatActivity {
     private static Context mContext;
     public static UtilsWS wsClient;
-    CtrlConfig ctrlConfig;
+    private static CtrlConfig ctrlConfig;
+    private static CtrlPrincipal ctrlPrincipal;
 
     public static Context getContext() {
         return mContext;
@@ -60,30 +61,44 @@ public class Main extends AppCompatActivity {
         return list;
     }
 
-    public static void connectToServer(Activity activity, CtrlConfig ctrlConfig) {
-        ctrlConfig.txtMessage.setText("Connecting ...");
-        Log.d("barretina", "estoy conectando");
-        // Implementa delay usando Handler para Android
-        new android.os.Handler().postDelayed(() -> {
+    public static void connectToServer(Activity activity, CtrlConfig ctrlConfig, Boolean isConfig) {
+
+        // Lanza la actividad CtrlConfig mediante un Intent para iniciar la configuración
+        ctrlConfig.txtMessage.setText("Click button to Connect");
+        if (isConfig) {
+            Log.d("CtrlConfig", "Existe el archivo CONFIG");
+            String host = String.valueOf(ctrlConfig.txtHost.getText());
+
+        }else {
+            Log.d("ConnectServ", "estoy conectando");
+            // Implementa delay usando Handler para Android
             String host = String.valueOf(ctrlConfig.txtHost.getText());
             String name = String.valueOf(ctrlConfig.txtName.getText());
-
             ctrlConfig.saveDataToXml(ctrlConfig, host, name);
             ctrlConfig.txtMessage.setText("Datos obtenidos ...");
+        }
 
-           // wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
+        new android.os.Handler().postDelayed(() -> {
+            // wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
             wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
-
-
+            Main.sendMessageToServer("productes", null);
             wsClient.onMessage((response) -> {
-                activity.runOnUiThread(() -> wsMessage(response, null));
+                activity.runOnUiThread(() -> {
+                    Log.d("WS_MESSAGE", "Mensaje recibido: " + response);
+                    wsMessage(response, ctrlConfig);
+                });
             });
             wsClient.onError((response) -> {
-                activity.runOnUiThread(() -> wsError(response, null));
+                activity.runOnUiThread(() -> {
+                    Log.e("WS_ERROR", "Error en WebSocket: " + response);
+                    wsError(response, ctrlConfig);
+                });
             });
 
-            Main.changeView("CtrlPrincipal");
+
+            //Main.changeView("CtrlPrincipal");
         }, 1500);
+
     }
 
 
@@ -93,10 +108,12 @@ public class Main extends AppCompatActivity {
         try {
             JSONObject msgObj = new JSONObject(response);
 
-            Log.d("DEBUGGEO", msgObj.toString());
             switch (msgObj.getString("type")) {
-                case "tags":
-                    Log.d("CtrlPrincipal", msgObj.getString("tags"));
+                case "productes":
+                    Log.d("CtrlPrincipal2", msgObj.toString());
+                    String productsString = msgObj.getString("products");
+                    Main.changeView("CtrlPrincipal", productsString);
+
                     break;
 
                 case "countdown":
@@ -121,21 +138,24 @@ public class Main extends AppCompatActivity {
         }
     }
 
-    public static void changeView(String viewName) {
-        // Lanza la actividad CtrlConfig mediante un Intent para iniciar la configuración
-        Intent intent;
 
+
+    public static void changeView(String viewName, String jsonData) {
+        Intent intent;
         switch (viewName) {
             case "CtrlConfig":
                 intent = new Intent(mContext, CtrlConfig.class);
-                mContext.startActivity(intent);
                 break;
             case "CtrlPrincipal":
                 intent = new Intent(mContext, CtrlPrincipal.class);
-                mContext.startActivity(intent);
+                intent.putExtra("jsonData", jsonData); // Pasa el JSON como extra
                 break;
+            default:
+                return;
         }
+        mContext.startActivity(intent);
     }
+
 
     public static void sendMessageToServer(String type, JSONObject data) {
         if (wsClient != null) {
@@ -144,7 +164,7 @@ public class Main extends AppCompatActivity {
                 message.put("type", type);
                 message.put("data", data); // Datos específicos de la acción
 
-                wsClient.safeSend(message.toString());
+                wsClient.safeSend(type);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Failed to send message");
@@ -162,4 +182,6 @@ public class Main extends AppCompatActivity {
             new android.os.Handler().postDelayed(() -> ctrlConfig.txtMessage.setText(""), 1500);
         }
     }
+
+
 }
