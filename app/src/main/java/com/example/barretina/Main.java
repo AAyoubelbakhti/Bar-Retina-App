@@ -79,8 +79,8 @@ public class Main extends AppCompatActivity {
         }
 
         new android.os.Handler().postDelayed(() -> {
-            // wsClient = UtilsWS.getSharedInstance("wss://" + host + ".ieti.site:443");
-            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
+            wsClient = UtilsWS.getSharedInstance("wss://barretina1.ieti.site:443");
+//            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
             Main.sendMessageToServer("productes", null);
             wsClient.onMessage((response) -> {
                 activity.runOnUiThread(() -> {
@@ -112,7 +112,9 @@ public class Main extends AppCompatActivity {
                 case "productes":
                     Log.d("CtrlPrincipal2", msgObj.toString());
                     String productsString = msgObj.getString("products");
+
                     Main.changeView("CtrlPrincipal", productsString);
+
 
                     break;
 
@@ -149,12 +151,21 @@ public class Main extends AppCompatActivity {
             case "CtrlPrincipal":
                 intent = new Intent(mContext, CtrlPrincipal.class);
                 intent.putExtra("jsonData", jsonData); // Pasa el JSON como extra
+                Log.d("changeView", "Datos JSON pasados: " + jsonData);
                 break;
             default:
+                Log.e("changeView", "Vista desconocida: " + viewName);
                 return;
         }
-        mContext.startActivity(intent);
+        if (mContext != null ) {
+            Log.d("changeView", "Contexto bien.");
+            mContext.startActivity(intent);
+        } else {
+            Log.e("changeView", "Contexto es null. No se puede cambiar de vista.");
+        }
+        //mContext.startActivity(intent);
     }
+
 
 
     public static void sendMessageToServer(String type, JSONObject data) {
@@ -162,9 +173,9 @@ public class Main extends AppCompatActivity {
             JSONObject message = new JSONObject();
             try {
                 message.put("type", type);
-                message.put("data", data); // Datos específicos de la acción
+                message.put("body", data); // Datos específicos de la acción
 
-                wsClient.safeSend(type);
+                wsClient.safeSend(message.toString());
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Failed to send message");
