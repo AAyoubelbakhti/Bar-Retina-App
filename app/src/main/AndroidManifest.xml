@@ -25,6 +25,7 @@
         <!-- Declaración de las demás actividades -->
         <activity android:name=".CtrlConfig" />
         <activity android:name=".CtrlPrincipal" />
+        <activity android:name=".CtrlTaula" />
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

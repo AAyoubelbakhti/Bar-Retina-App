@@ -112,8 +112,8 @@ public class Main extends AppCompatActivity {
                 case "productes":
                     Log.d("CtrlPrincipal2", msgObj.toString());
                     String productsString = msgObj.getString("products");
-
-                    Main.changeView("CtrlPrincipal", productsString);
+                    Main.changeView("CtrlTaula", null);
+                   // Main.changeView("CtrlPrincipal", productsString);
 
 
                     break;
@@ -152,6 +152,9 @@ public class Main extends AppCompatActivity {
                 intent = new Intent(mContext, CtrlPrincipal.class);
                 intent.putExtra("jsonData", jsonData); // Pasa el JSON como extra
                 Log.d("changeView", "Datos JSON pasados: " + jsonData);
+                break;
+            case "CtrlTaula":
+                intent = new Intent(mContext, CtrlTaula.class);
                 break;
             default:
                 Log.e("changeView", "Vista desconocida: " + viewName);

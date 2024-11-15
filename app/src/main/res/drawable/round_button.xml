@@ -1,0 +1,10 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#6200EE" /> <!-- Color de fondo -->
+    <corners android:radius="50dp" /> <!-- Bordes redondeados -->
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF" /> <!-- Borde blanco -->
+    <size
+        android:width="100dp"
+        android:height="100dp" /> <!-- Tamaño de los botones -->
+</shape>
