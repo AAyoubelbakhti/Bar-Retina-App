@@ -7,6 +7,16 @@
     android:padding="16dp">
 
     <!-- Título -->
+
+    <TextView
+        android:id="@+id/txtMesa"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="Mesa: "
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"

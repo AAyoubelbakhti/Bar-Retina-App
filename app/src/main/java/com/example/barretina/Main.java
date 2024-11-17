@@ -22,6 +22,7 @@ public class Main extends AppCompatActivity {
     public static UtilsWS wsClient;
     private static CtrlConfig ctrlConfig;
     private static CtrlPrincipal ctrlPrincipal;
+    public static int mesaId;
 
     public static Context getContext() {
         return mContext;
@@ -31,6 +32,7 @@ public class Main extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
+        mesaId = 0;
         Intent intent = new Intent(Main.this, CtrlConfig.class);
         startActivity(intent);
 
@@ -79,9 +81,10 @@ public class Main extends AppCompatActivity {
         }
 
         new android.os.Handler().postDelayed(() -> {
-            wsClient = UtilsWS.getSharedInstance("wss://barretina1.ieti.site:443");
-//            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
-            Main.sendMessageToServer("productes", null);
+//            wsClient = UtilsWS.getSharedInstance("wss://barretina1.ieti.site:443");
+            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
+            Main.changeView("CtrlTaula", null);
+
             wsClient.onMessage((response) -> {
                 activity.runOnUiThread(() -> {
                     Log.d("WS_MESSAGE", "Mensaje recibido: " + response);
@@ -112,8 +115,8 @@ public class Main extends AppCompatActivity {
                 case "productes":
                     Log.d("CtrlPrincipal2", msgObj.toString());
                     String productsString = msgObj.getString("products");
-                    Main.changeView("CtrlTaula", null);
-                   // Main.changeView("CtrlPrincipal", productsString);
+
+                    Main.changeView("CtrlPrincipal", productsString);
 
 
                     break;
@@ -148,21 +151,35 @@ public class Main extends AppCompatActivity {
             case "CtrlConfig":
                 intent = new Intent(mContext, CtrlConfig.class);
                 break;
-            case "CtrlPrincipal":
-                intent = new Intent(mContext, CtrlPrincipal.class);
-                intent.putExtra("jsonData", jsonData); // Pasa el JSON como extra
-                Log.d("changeView", "Datos JSON pasados: " + jsonData);
-                break;
             case "CtrlTaula":
                 intent = new Intent(mContext, CtrlTaula.class);
                 break;
+            case "CtrlPrincipal":
+                intent = new Intent(mContext, CtrlPrincipal.class);
+                intent.putExtra("jsonData", jsonData); // Pasa el JSON como extra
+                //intent.putExtra("mesaId", Main.mesaId);
+                Log.d("changeView", "Datos JSON pasados: " + jsonData);
+                break;
+            case "CtrlComanda":
+                intent = new Intent(mContext, CtrlComanda.class);
+                intent.putExtra("comandas", jsonData); // Pasa el JSON como extra
+                //intent.putExtra("mesaId", Main.mesaId);
+                Log.d("changeView", "Datos JSON pasados: " + jsonData);
+                break;
+
             default:
                 Log.e("changeView", "Vista desconocida: " + viewName);
                 return;
+
+
         }
         if (mContext != null ) {
             Log.d("changeView", "Contexto bien.");
-            mContext.startActivity(intent);
+            try {
+                mContext.startActivity(intent);
+            } catch (Exception e){
+                Log.e("changeView", e.toString());
+            }
         } else {
             Log.e("changeView", "Contexto es null. No se puede cambiar de vista.");
         }

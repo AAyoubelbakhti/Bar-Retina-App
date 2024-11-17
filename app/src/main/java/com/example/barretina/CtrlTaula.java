@@ -38,7 +38,10 @@ public class CtrlTaula extends AppCompatActivity {
 
             mesaButton.setOnClickListener(v -> {
                 int mesaId = (int) v.getTag();
-                Log.d("CtrlPrincipal", "Mesa seleccionada: " + mesaId);
+                Main.mesaId = mesaId;
+
+                Main.sendMessageToServer("productes", null);
+                Log.d("CtrlPrincipal", "Mesa seleccionada: " + Main.mesaId);
             });
 
             gridLayoutMesas.addView(mesaButton);

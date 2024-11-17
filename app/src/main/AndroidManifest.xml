@@ -26,6 +26,7 @@
         <activity android:name=".CtrlConfig" />
         <activity android:name=".CtrlPrincipal" />
         <activity android:name=".CtrlTaula" />
+        <activity android:name=".CtrlComanda" />
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>

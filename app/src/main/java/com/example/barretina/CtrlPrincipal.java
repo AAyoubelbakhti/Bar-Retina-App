@@ -21,6 +21,7 @@ public class CtrlPrincipal extends AppCompatActivity {
     private JSONArray comandas = new JSONArray(); // Lista de comandas
     private Button btnVerComandas; // Botón para ver comandas
     private TextView txtContador;
+    private TextView txtMesa;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +31,8 @@ public class CtrlPrincipal extends AppCompatActivity {
         listViewProductes = findViewById(R.id.listViewProductes);
         btnVerComandas = findViewById(R.id.btnVerComandas);
         txtContador = findViewById(R.id.txtContador);
+        txtMesa = findViewById(R.id.txtMesa);
+
 
         // Obtener el JSON desde los extras
         String productsString = getIntent().getStringExtra("jsonData");
@@ -46,12 +49,14 @@ public class CtrlPrincipal extends AppCompatActivity {
         btnVerComandas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mostrarComandas();
+               //mostrarComandas();
+                Main.changeView("CtrlComanda", comandas.toString() );
             }
         });
     }
 
     public void cargarProductos(JSONArray productosJsonArray) {
+        txtMesa.setText("Mesa: " + String.valueOf(Main.mesaId));
         List<Producte> productes = new ArrayList<>();
         try {
             for (int i = 0; i < productosJsonArray.length(); i++) {
