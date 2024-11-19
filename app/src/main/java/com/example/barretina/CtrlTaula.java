@@ -33,13 +33,17 @@ public class CtrlTaula extends AppCompatActivity {
             mesaButton.setTag(i); // Asigna ID como etiqueta
             mesaButton.setBackgroundResource(R.drawable.round_button);
 
+            // Cambiar el color de fondo del botón a un tono más oscuro
+            mesaButton.setBackgroundColor(getResources().getColor(R.color.granate));
+
+            // Cambiar el color de texto
+            mesaButton.setTextColor(getResources().getColor(R.color.blanco));
+
             GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
             layoutParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             layoutParams.setMargins(16, 16, 16, 16);
             mesaButton.setLayoutParams(layoutParams);
-
-            
 
             mesaButton.setOnClickListener(v -> {
                 int mesaId = (int) v.getTag();
@@ -52,5 +56,6 @@ public class CtrlTaula extends AppCompatActivity {
             gridLayoutMesas.addView(mesaButton);
         }
     }
+
 
 }

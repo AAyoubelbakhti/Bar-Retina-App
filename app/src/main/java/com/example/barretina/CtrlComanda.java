@@ -71,12 +71,7 @@ public class CtrlComanda extends AppCompatActivity {
         btnActualizar.setOnClickListener(v -> actualizarVista("enviada"));
     }
 
-    private void enviarResultado() {
-        Intent resultIntent = new Intent();
-        resultIntent.putExtra("updatedComandas", comandas.toString());
-        setResult(RESULT_OK, resultIntent);
-        finish(); // Finaliza la actividad
-    }
+
 
 
 

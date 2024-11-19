@@ -3,39 +3,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#f0f0f0">
 
     <EditText
         android:id="@+id/txtName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre" />
+        android:hint="Nombre"
+        android:textColor="#272727"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:textColorHint="#a3a3a3"/>
 
     <EditText
         android:id="@+id/txtHost"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Host" />
-
+        android:hint="Host"
+        android:textColor="#272727"
+        android:background="@drawable/rounded_edittext"
+        android:padding="12dp"
+        android:layout_marginBottom="16dp"
+        android:textColorHint="#a3a3a3"/>
 
     <TextView
         android:id="@+id/txtMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Message"
-        android:paddingTop="16dp" />
+        android:textColor="#272727"
+        android:paddingTop="16dp"
+        android:textSize="16sp"/>
 
     <Button
         android:id="@+id/btnConnect"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Connect to Server"
-        android:layout_marginTop="16dp" />
-
+        android:textColor="#ffffff"
+        android:backgroundTint="#cc0001"
+        android:padding="12dp"
+        android:layout_marginTop="16dp"/>
 
     <Button
         android:id="@+id/btnConfig"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Set Default Config " />
+        android:text="Set Default Config"
+        android:textColor="#ffffff"
+        android:backgroundTint="#272727"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"/>
 </LinearLayout>

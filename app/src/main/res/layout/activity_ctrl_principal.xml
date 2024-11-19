@@ -2,30 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F5F5F5"
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Título -->
-
     <TextView
         android:id="@+id/txtMesa"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
+        android:layout_gravity="center"
         android:text="Mesa: "
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:textColor="#B22222"
+        android:padding="8dp"
+        android:background="#FFFFFF"
+        android:elevation="2dp"
+        android:layout_margin="8dp" />
 
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Barretina Bar"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_marginBottom="16dp" />
 
-    <!-- Fila horizontal con los botones y el contador -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -33,39 +39,47 @@
         android:gravity="center"
         android:layout_marginTop="16dp">
 
-        <!-- Botón "Ver Comanda" -->
         <Button
             android:id="@+id/btnVerComandas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Ver Comanda"
-            android:layout_marginEnd="16dp" />
+            android:layout_marginEnd="16dp"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B22222"
+            android:elevation="4dp"
+            android:padding="8dp" />
 
-        <!-- Contador -->
         <TextView
             android:id="@+id/txtContador"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Productos: 0"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:textStyle="bold"
+            android:textColor="#333333"
             android:layout_marginEnd="16dp" />
 
-        <!-- Botón "Settings" -->
         <Button
             android:id="@+id/btnConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings" />
+            android:text="Settings"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B22222"
+            android:elevation="4dp"
+            android:padding="8dp" />
 
     </LinearLayout>
 
-    <!-- Lista de productos -->
     <ListView
         android:id="@+id/listViewProductes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:dividerHeight="10dp" />
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="2dp"
+        android:background="#FFFFFF"
+        android:elevation="4dp" />
 
 </LinearLayout>
