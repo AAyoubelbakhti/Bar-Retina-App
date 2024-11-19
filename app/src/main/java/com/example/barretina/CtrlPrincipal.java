@@ -1,5 +1,6 @@
 package com.example.barretina;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONArray;
@@ -42,22 +45,34 @@ public class CtrlPrincipal extends AppCompatActivity {
 
 
 
+    private ActivityResultLauncher<Intent> launcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ctrl_principal);
-        // Configuración del OnBackPressedDispatcher
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                // Regresar a la pantalla de selección de mesas
-                Main.changeView("CtrlTaula", null, null);
-                finish(); // Finaliza la actividad actual
-            }
+        btnVerComandas = findViewById(R.id.btnVerComandas);
+
+        launcher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        // Recibe las comandas actualizadas desde CtrlComanda
+                        String updatedComandas = result.getData().getStringExtra("updatedComandas");
+                        cargarComandas(updatedComandas);
+                    }
+                }
+        );
+
+        btnVerComandas.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CtrlComanda.class);
+            intent.putExtra("comandas", comandas.toString());
+            launcher.launch(intent); // Lanza CtrlComanda esperando el resultado
         });
 
+
+
         listViewProductes = findViewById(R.id.listViewProductes);
-        btnVerComandas = findViewById(R.id.btnVerComandas);
         txtContador = findViewById(R.id.txtContador);
         txtMesa = findViewById(R.id.txtMesa);
 

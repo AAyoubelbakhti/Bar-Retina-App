@@ -37,11 +37,16 @@ public class CtrlComanda extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                // Regresar a la vista principal de la mesa seleccionada
-                Main.changeView("CtrlPrincipal", null, comandas.toString());
-                finish(); // Finaliza la actividad actual
+                // Prepara el resultado con las comandas actualizadas
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("updatedComandas", comandas.toString());
+                setResult(RESULT_OK, resultIntent);
+
+                // Finaliza la actividad
+                finish();
             }
         });
+
 
         listViewComandas = findViewById(R.id.listViewComandas);
         btnEnviar = findViewById(R.id.btnEnviar);
