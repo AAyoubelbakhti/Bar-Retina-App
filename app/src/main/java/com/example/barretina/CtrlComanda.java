@@ -1,11 +1,14 @@
 package com.example.barretina;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +16,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CtrlComanda extends AppCompatActivity {
 
@@ -22,11 +26,22 @@ public class CtrlComanda extends AppCompatActivity {
     private Button btnEnviar;
     private Button btnActualizar;
     private TextView txtTotal;
+    private double preuComanda = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ctrl_comanda);
+
+        // Configuración del OnBackPressedDispatcher
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                // Regresar a la vista principal de la mesa seleccionada
+                Main.changeView("CtrlPrincipal", null, comandas.toString());
+                finish(); // Finaliza la actividad actual
+            }
+        });
 
         listViewComandas = findViewById(R.id.listViewComandas);
         btnEnviar = findViewById(R.id.btnEnviar);
@@ -38,7 +53,7 @@ public class CtrlComanda extends AppCompatActivity {
         if (comandasString != null) {
             try {
                 comandas = new JSONArray(comandasString);
-                cargarComandas();
+                listarComandas();
             } catch (JSONException e) {
                 Log.e("CtrlComandas", "Error al cargar JSON: " + e.getMessage());
             }
@@ -48,10 +63,20 @@ public class CtrlComanda extends AppCompatActivity {
         btnEnviar.setOnClickListener(v -> enviarComanda());
 
         // Configuración del botón "Actualizar"
-        btnActualizar.setOnClickListener(v -> actualizarVista());
+        btnActualizar.setOnClickListener(v -> actualizarVista("enviada"));
     }
 
-    private void cargarComandas() {
+    private void enviarResultado() {
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("updatedComandas", comandas.toString());
+        setResult(RESULT_OK, resultIntent);
+        finish(); // Finaliza la actividad
+    }
+
+
+
+
+    private void listarComandas() {
         List<Producte> productesComanda = new ArrayList<>();
         try {
             double total = 0.0;
@@ -70,7 +95,7 @@ public class CtrlComanda extends AppCompatActivity {
                 Producte producte = new Producte(id, nom, descripcio, imatge, preu / quantitat, quantitat);
                 productesComanda.add(producte);
             }
-
+            preuComanda = total;
             txtTotal.setText("Total: €" + total);
 
             adapter = new ComandaAdapter(this, productesComanda, this::modificarProducto);
@@ -96,19 +121,47 @@ public class CtrlComanda extends AppCompatActivity {
                     break;
                 }
             }
-            cargarComandas();
+            listarComandas();
+            actualizarVista("en curs"); // Actualizar el estado tras sumar/restar
         } catch (JSONException e) {
             Log.e("CtrlComandas", "Error al modificar producto: " + e.getMessage());
         }
     }
 
     private void enviarComanda() {
-        // Simula el envío de la comanda al servidor
         Log.d("CtrlComandas", "Comanda enviada: " + comandas.toString());
+        JSONObject comandasJson = new JSONObject();
+        try {
+            comandasJson.put("idTaula", Main.mesaId);
+            comandasJson.put("idCambrer", 1);
+            comandasJson.put("estatComanda", "pendent");
+            comandasJson.put("preuComanda", preuComanda);
+            comandasJson.put("comandaTxt", comandas);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        Main.sendMessageToServer("insert-comanda", comandasJson);
         finish(); // Finaliza la actividad después del envío
     }
 
-    private void actualizarVista() {
-        cargarComandas();
+    private void actualizarVista(String estatComanda) {
+        Log.d("CtrlComandas", "Actualizando comanda con estado: " + estatComanda);
+        JSONObject comandasJson = new JSONObject();
+        try {
+            comandasJson.put("idTaula", Main.mesaId);
+            comandasJson.put("idCambrer", 1);
+            comandasJson.put("estatComanda", estatComanda);
+            comandasJson.put("preuComanda", preuComanda);
+            comandasJson.put("comandaTxt", comandas);
+
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        Main.sendMessageToServer("update-comanda", comandasJson);
+        listarComandas(); // Actualizar la lista de comandas en la vista
     }
 }
+

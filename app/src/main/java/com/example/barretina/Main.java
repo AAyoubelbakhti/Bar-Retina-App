@@ -83,7 +83,7 @@ public class Main extends AppCompatActivity {
         new android.os.Handler().postDelayed(() -> {
 //            wsClient = UtilsWS.getSharedInstance("wss://barretina1.ieti.site:443");
             wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
-            Main.changeView("CtrlTaula", null);
+            Main.changeView("CtrlTaula", null, null);
 
             wsClient.onMessage((response) -> {
                 activity.runOnUiThread(() -> {
@@ -114,27 +114,19 @@ public class Main extends AppCompatActivity {
             switch (msgObj.getString("type")) {
                 case "productes":
                     Log.d("CtrlPrincipal2", msgObj.toString());
-                    String productsString = msgObj.getString("products");
+                    String productesString = msgObj.getString("products");
+                    String comandasString = msgObj.getString("body");
 
-                    Main.changeView("CtrlPrincipal", productsString);
-
-
+                    Main.changeView("CtrlPrincipal", productesString, comandasString);
                     break;
-
-                case "countdown":
-                    int value = msgObj.getInt("value");
-                    String txt = value == 0 ? "GO" : String.valueOf(value);
-                    if (value == 0) {
-                        // Cambiar vista según sea necesario
-                    }
-                    ctrlConfig.txtMessage.setText(txt);
+                case "comanda_llesta":
                     break;
+//                case "comandes":
+//                    String comnadasString = msgObj.getString("body");
+//                    ctrlPrincipal.cargarComandas(comnadasString);
+//                    break;
 
-                case "gameOver":
-                    String winner = msgObj.getJSONObject("data").getString("winner");
-                    String message = winner.equals("") ? "Has ganado" : "Has perdido";
-                    ctrlConfig.showEndGameMessage(message, message);
-                    break;
+
 
                 // Agrega otros casos según tus necesidades
             }
@@ -145,7 +137,7 @@ public class Main extends AppCompatActivity {
 
 
 
-    public static void changeView(String viewName, String jsonData) {
+    public static void changeView(String viewName, String productesString, String comandasString) {
         Intent intent;
         switch (viewName) {
             case "CtrlConfig":
@@ -156,15 +148,16 @@ public class Main extends AppCompatActivity {
                 break;
             case "CtrlPrincipal":
                 intent = new Intent(mContext, CtrlPrincipal.class);
-                intent.putExtra("jsonData", jsonData); // Pasa el JSON como extra
-                //intent.putExtra("mesaId", Main.mesaId);
-                Log.d("changeView", "Datos JSON pasados: " + jsonData);
+                intent.putExtra("productesString", productesString);
+                intent.putExtra("comandasString", comandasString);
+                intent.putExtra("mesaId", mesaId); // Pasa el ID de la mesa
                 break;
+
             case "CtrlComanda":
                 intent = new Intent(mContext, CtrlComanda.class);
-                intent.putExtra("comandas", jsonData); // Pasa el JSON como extra
+                intent.putExtra("comandas", comandasString); // Pasa el JSON como extra
                 //intent.putExtra("mesaId", Main.mesaId);
-                Log.d("changeView", "Datos JSON pasados: " + jsonData);
+                Log.d("changeView", "Datos JSON pasados: " + comandasString);
                 break;
 
             default:
@@ -193,7 +186,9 @@ public class Main extends AppCompatActivity {
             JSONObject message = new JSONObject();
             try {
                 message.put("type", type);
-                message.put("body", data); // Datos específicos de la acción
+                message.put("body", data);
+
+
 
                 wsClient.safeSend(message.toString());
             } catch (Exception e) {

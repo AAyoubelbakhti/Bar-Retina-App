@@ -18,7 +18,10 @@ public class CtrlTaula extends AppCompatActivity {
 
         gridLayoutMesas = findViewById(R.id.gridLayoutMesas);
         crearMesas();
+
+
     }
+
 
     /**
      * Crear botones redondos que representan las mesas.
@@ -35,6 +38,8 @@ public class CtrlTaula extends AppCompatActivity {
             layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             layoutParams.setMargins(16, 16, 16, 16);
             mesaButton.setLayoutParams(layoutParams);
+
+            
 
             mesaButton.setOnClickListener(v -> {
                 int mesaId = (int) v.getTag();
