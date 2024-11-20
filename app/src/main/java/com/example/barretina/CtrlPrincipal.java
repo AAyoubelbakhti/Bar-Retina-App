@@ -149,6 +149,7 @@ public class CtrlPrincipal extends AppCompatActivity {
     public void cargarComandas(String comandasString) {
         comandas = new JSONArray();
         try {
+
             JSONArray comandasArray = new JSONArray(comandasString);
 
             for (int i = 0; i < comandasArray.length(); i++) {
@@ -156,13 +157,19 @@ public class CtrlPrincipal extends AppCompatActivity {
                 String estado = item.getString("estat_comanda");
                 int mesa = item.getInt("id_taula"); // Asegúrate de que id_taula sea un entero
                 if (estado.equals("en curs") && mesa == Main.mesaId) {
-                    JSONArray comandasBBDD = new JSONArray(item.getString("comanda"));
-                    for (int y = 0; y < comandasBBDD.length(); y++) {
-                        comandas.put(comandasBBDD.getJSONObject(y));
+                    //Log.d("CtrlPrincipal", comandasString.toString());
+                    if (item.getString("comanda").contains("[")) {
+                        JSONArray comandasBBDD = new JSONArray(item.getString("comanda"));
+                        for (int y = 0; y < comandasBBDD.length(); y++) {
+                            comandas.put(comandasBBDD.getJSONObject(y));
+                        }
+                    }else {
+                        Log.d("CtrlPrincipal", "Manolo: " + item.getString("comanda"));
+                        comandas.put(item.getString("comanda"));
                     }
                 }
             }
-
+            Log.d("CtrlPrincipal", String.valueOf(comandas.length()));
             txtContador.setText("Productos: " + comandas.length());
         } catch (JSONException e) {
             Log.e("CtrlPrincipal", "Error al cargar las comandas: " + e.getMessage());
