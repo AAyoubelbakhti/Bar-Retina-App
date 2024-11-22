@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         tools:targetApi="31">
         <activity
-            android:name=".Main"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,10 +23,8 @@
             </intent-filter>
         </activity>
         <!-- Declaración de las demás actividades -->
-        <activity android:name=".CtrlConfig" />
-        <activity android:name=".CtrlPrincipal" />
-        <activity android:name=".CtrlTaula" />
-        <activity android:name=".CtrlComanda" />
+        <activity android:name=".ImageListActivity" />
+
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
