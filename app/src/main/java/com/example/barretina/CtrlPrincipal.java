@@ -1,11 +1,14 @@
 package com.example.barretina;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -20,6 +23,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 public class CtrlPrincipal extends AppCompatActivity {
+    public static CtrlConfig ctrlConfig;
     private ListView listViewProductes;
     private ProducteAdapter adapter;
     private JSONArray comandas = new JSONArray(); // Lista de comandas
@@ -27,6 +31,10 @@ public class CtrlPrincipal extends AppCompatActivity {
     private TextView txtContador;
     private TextView txtMesa;
     private JSONArray productosJsonArray;
+
+    public void setCtrlCofig(CtrlConfig ctrlConfig){
+        this.ctrlConfig = ctrlConfig;
+    }
     public interface OnComandasReceivedListener {
         void onComandasReceived(String comandasJson);
     }
@@ -118,12 +126,20 @@ public class CtrlPrincipal extends AppCompatActivity {
         Button btnTapas = findViewById(R.id.btnTapas);
         Button btnBebidas = findViewById(R.id.btnBebidas);
         Button btnTodos = findViewById(R.id.btnTodos);
+        Button btnConfig = findViewById(R.id.btnConfig);
 
         // Filtros de categorías
         btnTodos.setOnClickListener(v ->  cargarProductos(productosJsonArray, null));
         btnPostres.setOnClickListener(v ->  cargarProductos(productosJsonArray, "Postre"));
         btnTapas.setOnClickListener(v ->     cargarProductos(productosJsonArray, "Tapa"));
         btnBebidas.setOnClickListener(v ->     cargarProductos(productosJsonArray, "Bebida"));
+
+        btnConfig.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cambiarConfig();
+            }
+        });
     }
 
 
@@ -242,5 +258,43 @@ public class CtrlPrincipal extends AppCompatActivity {
         } catch (JSONException e) {
             Log.e("CtrlPrincipal", "Error al agregar producto: " + e.getMessage());
         }
+    }
+
+    private void cambiarConfig() {
+        // Crear un layout para el AlertDialog con dos campos EditText
+        final EditText editTextName = new EditText(this);
+        final EditText editTextHost = new EditText(this);
+        // Configurar los EditText (puedes poner sugerencias, hints, etc.)
+        editTextName.setHint("Introduce el nombre");
+        editTextHost.setHint("Introduce el host");
+        // Crear un LinearLayout que contenga ambos EditText
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.addView(editTextName);
+        layout.addView(editTextHost);
+        setCtrlCofig(CtrlConfig.getInstance());
+        // Crear el AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Cambiar Configuración")
+                .setMessage("Introduce el nombre y host:")
+                .setView(layout) // Establece el layout con los EditText
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Obtener los valores ingresados por el usuario
+                        String name = editTextName.getText().toString();
+                        String host = editTextHost.getText().toString();
+                        // Imprimir los valores en Log.d
+                        Log.d("Config", "Nombre: " + name);
+                        Log.d("Config", "Host: " + host);
+                        actulizarConfigXML(host, name);
+                    }
+                })
+                .setNegativeButton("Cancelar", null) // Botón para cancelar
+                .show(); // Mostrar el AlertDialog
+    }
+    public void actulizarConfigXML(String host, String name){
+        Log.d("CtrlPrincipal", "Estory actualizando");
+        ctrlConfig.saveDataToXml(ctrlConfig, host, name);
     }
 }
