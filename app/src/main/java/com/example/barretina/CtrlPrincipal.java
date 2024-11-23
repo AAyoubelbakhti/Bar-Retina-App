@@ -126,7 +126,18 @@ public class CtrlPrincipal extends AppCompatActivity {
                 String imatge = jsonProducte.optString("imatge", "");
                 double preu = jsonProducte.getDouble("preu");
 
-                Producte producte = new Producte(id, nom, descripcio, imatge, preu, 0);
+                String imageName = imatge.substring(0, imatge.lastIndexOf('.'));
+
+                // Obtener el ID del recurso de la imagen usando su nombre
+                Log.d("CtrlPrincipal", imageName);
+
+                int imatgeResId = getResources().getIdentifier(imageName, "drawable", getPackageName());
+                // Si el recurso no se encuentra, usar una imagen predeterminada
+                if (imatgeResId == 0) {
+                    imatgeResId = R.drawable.round_button; // Asegúrate de tener esta imagen en res/drawable
+                }
+
+                Producte producte = new Producte(id, nom, descripcio, imatge, preu, 0,  imatgeResId);
                 productes.add(producte);
             }
 

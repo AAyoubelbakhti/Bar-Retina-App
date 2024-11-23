@@ -81,8 +81,8 @@ public class Main extends AppCompatActivity {
         }
 
         new android.os.Handler().postDelayed(() -> {
-            wsClient = UtilsWS.getSharedInstance("wss://barretina1.ieti.site:443");
-//            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
+//            wsClient = UtilsWS.getSharedInstance("wss://barretina1.ieti.site:443");
+            wsClient = UtilsWS.getSharedInstance("ws://10.0.2.2:4545");
             Main.changeView("CtrlTaula", null, null);
 
             wsClient.onMessage((response) -> {

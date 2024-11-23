@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.List;
 
@@ -25,11 +26,17 @@ public class ProducteAdapter extends ArrayAdapter<Producte> {
         TextView txtNom = convertView.findViewById(R.id.producte_nom);
         TextView txtDescripcio = convertView.findViewById(R.id.producte_descripcio);
         TextView txtPreu = convertView.findViewById(R.id.producte_preu);
+        ImageView imgFoto = convertView.findViewById(R.id.producte_foto);
 
         txtNom.setText(producte.getNom());
         txtDescripcio.setText(producte.getDescripcio());
         txtPreu.setText("€ " + producte.getPreu());
+        imgFoto.setImageResource(producte.getFotoResId());
 
         return convertView;
     }
 }
+
+
+
+

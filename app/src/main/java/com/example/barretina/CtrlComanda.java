@@ -92,7 +92,20 @@ public class CtrlComanda extends AppCompatActivity {
 
                 total += preu;
 
-                Producte producte = new Producte(id, nom, descripcio, imatge, preu / quantitat, quantitat);
+
+                String imageName = imatge.substring(0, imatge.lastIndexOf('.'));
+
+                // Obtener el ID del recurso de la imagen usando su nombre
+                Log.d("CtrlPrincipal", imageName);
+
+                int imatgeResId = getResources().getIdentifier(imageName, "drawable", getPackageName());
+                // Si el recurso no se encuentra, usar una imagen predeterminada
+                if (imatgeResId == 0) {
+                    imatgeResId = R.drawable.round_button; // Asegúrate de tener esta imagen en res/drawable
+                }
+
+
+                Producte producte = new Producte(id, nom, descripcio, imatge, preu / quantitat, quantitat,imatgeResId);
                 productesComanda.add(producte);
             }
             preuComanda = total;
