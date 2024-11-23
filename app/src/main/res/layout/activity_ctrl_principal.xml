@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -40,10 +41,58 @@
         android:layout_marginTop="16dp">
 
         <Button
+            android:id="@+id/btnTodos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Todos"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B22222"
+            android:elevation="4dp"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btnPostres"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Postres"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B22222"
+            android:elevation="4dp"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btnTapas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tapas"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B22222"
+            android:elevation="4dp"
+            android:padding="8dp" />
+
+        <Button
+            android:id="@+id/btnBebidas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bebidas"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#B22222"
+            android:elevation="4dp"
+            android:padding="8dp" />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp">
+
+        <Button
             android:id="@+id/btnVerComandas"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ver Comanda"
+            android:text="Ver Pedido"
             android:layout_marginEnd="16dp"
             android:textColor="#FFFFFF"
             android:backgroundTint="#B22222"
@@ -64,7 +113,7 @@
             android:id="@+id/btnConfig"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="Ajustes"
             android:textColor="#FFFFFF"
             android:backgroundTint="#B22222"
             android:elevation="4dp"

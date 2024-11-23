@@ -26,6 +26,7 @@ public class CtrlPrincipal extends AppCompatActivity {
     private Button btnVerComandas;
     private TextView txtContador;
     private TextView txtMesa;
+    private JSONArray productosJsonArray;
     public interface OnComandasReceivedListener {
         void onComandasReceived(String comandasJson);
     }
@@ -70,7 +71,7 @@ public class CtrlPrincipal extends AppCompatActivity {
             launcher.launch(intent); // Lanza CtrlComanda esperando el resultado
         });
 
-
+      ;
 
         listViewProductes = findViewById(R.id.listViewProductes);
         txtContador = findViewById(R.id.txtContador);
@@ -80,12 +81,14 @@ public class CtrlPrincipal extends AppCompatActivity {
         String productesString = getIntent().getStringExtra("productesString");
         if (productesString != null) {
             try {
-                JSONArray productosJsonArray = new JSONArray(productesString);
-                cargarProductos(productosJsonArray);
+               productosJsonArray = new JSONArray(productesString);
+                cargarProductos(productosJsonArray, null);
             } catch (JSONException e) {
                 Log.e("CtrlPrincipal", "Error parsing JSON 1: " + e.getMessage());
             }
         }
+
+
 
         int mesaId = getIntent().getIntExtra("mesaId", 0);
         txtMesa.setText("Mesa: " + mesaId);
@@ -110,10 +113,23 @@ public class CtrlPrincipal extends AppCompatActivity {
                 Main.changeView("CtrlComanda",null, comandas.toString());
             }
         });
+
+        Button btnPostres = findViewById(R.id.btnPostres);
+        Button btnTapas = findViewById(R.id.btnTapas);
+        Button btnBebidas = findViewById(R.id.btnBebidas);
+        Button btnTodos = findViewById(R.id.btnTodos);
+
+        // Filtros de categorías
+        btnTodos.setOnClickListener(v ->  cargarProductos(productosJsonArray, null));
+        btnPostres.setOnClickListener(v ->  cargarProductos(productosJsonArray, "Postre"));
+        btnTapas.setOnClickListener(v ->     cargarProductos(productosJsonArray, "Tapa"));
+        btnBebidas.setOnClickListener(v ->     cargarProductos(productosJsonArray, "Bebida"));
     }
 
-    // en comandes usar la "comandaTXT para sacar la info) *********
-    public void cargarProductos(JSONArray productosJsonArray) {
+
+    public void cargarProductos(JSONArray productosJsonArray, String categoria) {
+        Boolean add = true;
+
         //txtMesa.setText("Mesa: " + String.valueOf(Main.mesaId));
         List<Producte> productes = new ArrayList<>();
         try {
@@ -125,20 +141,30 @@ public class CtrlPrincipal extends AppCompatActivity {
                 String descripcio = jsonProducte.getString("descripcio");
                 String imatge = jsonProducte.optString("imatge", "");
                 double preu = jsonProducte.getDouble("preu");
-
-                String imageName = imatge.substring(0, imatge.lastIndexOf('.'));
-
-                // Obtener el ID del recurso de la imagen usando su nombre
-                Log.d("CtrlPrincipal", imageName);
-
-                int imatgeResId = getResources().getIdentifier(imageName, "drawable", getPackageName());
-                // Si el recurso no se encuentra, usar una imagen predeterminada
-                if (imatgeResId == 0) {
-                    imatgeResId = R.drawable.round_button; // Asegúrate de tener esta imagen en res/drawable
+                String categoriasString =  jsonProducte.getString("categoria");
+                Log.d("CtrlPrincipal", categoriasString);
+                if (categoria != null) {
+                    add = false;
+                    if (categoriasString.toLowerCase().contains(categoria.toLowerCase())) {
+                        add = true;
+                    }
                 }
 
-                Producte producte = new Producte(id, nom, descripcio, imatge, preu, 0,  imatgeResId);
-                productes.add(producte);
+                if ( add ) {
+                    String imageName = imatge.substring(0, imatge.lastIndexOf('.'));
+
+                    // Obtener el ID del recurso de la imagen usando su nombre
+                    Log.d("CtrlPrincipal", imageName);
+
+                    int imatgeResId = getResources().getIdentifier(imageName, "drawable", getPackageName());
+                    // Si el recurso no se encuentra, usar una imagen predeterminada
+                    if (imatgeResId == 0) {
+                        imatgeResId = R.drawable.round_button; // Asegúrate de tener esta imagen en res/drawable
+                    }
+
+                    Producte producte = new Producte(id, nom, descripcio, imatge, preu, 0, imatgeResId);
+                    productes.add(producte);
+                }
             }
 
             adapter = new ProducteAdapter(this, productes);
