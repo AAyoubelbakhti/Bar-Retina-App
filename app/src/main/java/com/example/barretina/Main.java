@@ -119,7 +119,8 @@ public class Main extends AppCompatActivity {
                     Log.d("CtrlPrincipal2", comandasString);
                     Main.changeView("CtrlPrincipal", productesString, comandasString);
                     break;
-                case "comanda_llesta":
+                case "producte-llest":
+                    ctrlPrincipal.productoListo(msgObj.getString("body"));
                     break;
 //                case "comandes":
 //                    String comnadasString = msgObj.getString("body");

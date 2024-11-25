@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -142,6 +143,11 @@ public class CtrlPrincipal extends AppCompatActivity {
         });
     }
 
+    public void productoListo(String mensaje){
+        // Mostrar un Toast simple
+        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
+
+    }
 
     public void cargarProductos(JSONArray productosJsonArray, String categoria) {
         Boolean add = true;
