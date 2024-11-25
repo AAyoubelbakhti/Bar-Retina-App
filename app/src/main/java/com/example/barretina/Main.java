@@ -120,7 +120,10 @@ public class Main extends AppCompatActivity {
                     Main.changeView("CtrlPrincipal", productesString, comandasString);
                     break;
                 case "producte-llest":
-                    ctrlPrincipal.productoListo(msgObj.getString("body"));
+                    Log.d("CtrlPrincipal", msgObj.toString());
+                   //trlPrincipal.productoListo(msgObj.getString("body"));
+                    Toast.makeText(mContext, msgObj.getString("body"), Toast.LENGTH_SHORT).show();
+
                     break;
 //                case "comandes":
 //                    String comnadasString = msgObj.getString("body");

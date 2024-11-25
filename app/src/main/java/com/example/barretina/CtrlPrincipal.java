@@ -143,11 +143,7 @@ public class CtrlPrincipal extends AppCompatActivity {
         });
     }
 
-    public void productoListo(String mensaje){
-        // Mostrar un Toast simple
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show();
 
-    }
 
     public void cargarProductos(JSONArray productosJsonArray, String categoria) {
         Boolean add = true;
@@ -245,6 +241,8 @@ public class CtrlPrincipal extends AppCompatActivity {
                     exists = true;
                     item.put("quantitat", item.getInt("quantitat") + 1);
                     item.put("preu", item.getDouble("preu") + producte.getPreu());
+                    item.put("preu-unitat", producte.getPreu());
+
                     break;
                 }
             }
