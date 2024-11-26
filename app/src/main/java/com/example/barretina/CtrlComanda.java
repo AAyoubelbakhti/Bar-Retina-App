@@ -68,7 +68,7 @@ public class CtrlComanda extends AppCompatActivity {
         btnEnviar.setOnClickListener(v -> enviarComanda());
 
         // Configuración del botón "Actualizar"
-        btnActualizar.setOnClickListener(v -> actualizarVista("enviada"));
+        btnActualizar.setOnClickListener(v -> actualizarVista("pendent"));
     }
 
 

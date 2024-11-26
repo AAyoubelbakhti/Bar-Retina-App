@@ -254,6 +254,7 @@ public class CtrlPrincipal extends AppCompatActivity {
                 newComanda.put("descripcio", producte.getDescripcio());
                 newComanda.put("imatge", producte.getImatge());
                 newComanda.put("preu", producte.getPreu());
+                newComanda.put("preu-unitat", producte.getPreu());
                 newComanda.put("quantitat", 1);
                 comandas.put(newComanda);
             }
